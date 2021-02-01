@@ -1,29 +1,61 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { isEmail } from 'validator'
+import { useFormik } from 'formik';
 
-// import Input from "react-validation/build/input";
-
+import AuthService from '../Services/authService';
 
 
 export default function LoginPage(){
+    const [isLoading, setisLoading] = useState(false)
+    const [formSubmitError, setFormSubmitError] = useState(false)
+    const [error, setError] = useState('')
+    const history = useHistory();
 
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-
-
-const emailOnChange =(emaill)=>{
-setEmail(emaill)
-}
-
-
-const passwordOnChange = () =>{
-    setPassword('hellrfoc rfjdb')
-}
-
-
-const submitForm = ()=>{
-    console.log('dbfjb')
-}
+    const validate = values =>{
+        const errors = {}
+        if(!isEmail(values.email)){
+            errors.email = 'Please enter a valid email'
+        }
+        if(!values.password){
+            errors.password = 'Required'
+        }
+        // else if(values.password.length <= 5 ){
+        //     errors.password = 'Password must be at least 6 characters.'
+        // }
+        return errors;
+    }
+  
+    const formik = useFormik({
+      initialValues: {
+        email: '',
+        password: ''
+      },
+      validate,
+      onSubmit: values => {
+          setisLoading(true)
+        AuthService.userLogIn(values.email,values.password)
+        .then((response)=>{
+            setisLoading(false)  
+            history.push('/')
+                
+                // alert('Login Success.')
+  
+        })
+        .catch((err)=>{
+            setisLoading(false)
+          setFormSubmitError(true)
+          if(err.message=== 'Request failed with status code 403')
+          {
+            setError('Email or Password is Incorrect')
+          }
+          else if(err.message === 'Request failed with status code 404'){
+            setError('Email Id Not Registered.')
+          }
+  
+        })
+      },
+    });
 
     return (
 
@@ -37,17 +69,24 @@ const submitForm = ()=>{
                             {/* <!-- Login form block --> */}
                             <div className="login__form">
                                 <h2>Login to your account</h2>
-                                <form onSubmit={submitForm}>
+                                {formSubmitError && <div className='alert alert-danger'>{error}</div>} 
+                                <form onSubmit={formik.handleSubmit}>
                                     <div className="group__input">
-                                        <input type="text" placeholder="Email address" onChange={emailOnChange} value={email}/>
+                                        <input name="email" id="email" type="text" placeholder="Email address" onChange={formik.handleChange} value={formik.values.email} onBlur={formik.handleBlur}/>
+                                    {formik.touched.email && formik.errors.email ? <div className="alert alert-danger" style={{padding: "5px 6px"}}>{formik.errors.email}</div> : null}
                                     </div>
                                     <div className="group__input forgot__pass">
 
-                                        <input type="password" placeholder="Password" onChange={passwordOnChange} value={password}/>
+                                        <input name="password" id="password" type="password" placeholder="Password" onChange={formik.handleChange} value={formik.values.password} onBlur={formik.handleBlur}/>
                                         <Link to="/forget-password">Forgot?</Link>
                                     </div>
+                                        { formik.touched.password && formik.errors.password ? <div className="alert alert-danger" style={{padding: "5px 6px"}}>{formik.errors.password}</div> : null}
                                     <div className="group__submit">
-                                        <input type="submit" value="Login"/>
+                                        {/* <input type="submit" value="Login"/> */}
+                                        <button type='submit' className='btn btn-primary w-100'> {isLoading && (
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                )}
+                                <span>Log In</span></button>
                                     </div>                                                                  
                                     <div className="create__account">                                        
                                         <p>Don't have an account? <Link to="/register">Create account</Link></p>
