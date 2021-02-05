@@ -1,28 +1,40 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Navbar, Nav } from 'react-bootstrap';
+import React from 'react';
+import { Nav, Navbar } from 'react-bootstrap';
+import { FaSignInAlt } from "react-icons/fa";
 
-export default function Header() {
+import { MdSettings } from "react-icons/md";
+import {Link} from 'react-router-dom'
+
+export default function Header(props) {
+  let user = localStorage.getItem('user')
     return (
-    <Navbar bg="dark" variant="dark">
-    <Navbar.Brand>
-        <Link to='/'>
-      {/* <img
-        alt=""
-        src="/cloudvault.png"
-        width="50"
-        height="60"
-        className="d-inline-block align-top"
-      />{' '} */}
-      CloudVault
-      </Link>
-    </Navbar.Brand>
-    <Navbar.Toggle />
-  <Navbar.Collapse className="justify-content-end">
-    <Navbar.Text>
-        <Link to="/register">Register</Link>
-    </Navbar.Text>
-  </Navbar.Collapse>
+      <>
+           <Navbar bg="dark" style={{background:'#20232A'}} variant="dark">
+    <Navbar.Brand >CloudVault</Navbar.Brand>
+    <Nav className="mr-auto">
+      
+      {user ? <><Nav.Link ><Link className="nav-link" to="/dashboard">Dashboard</Link></Nav.Link> <Nav.Link ><Link className="nav-link" to="/fileList">List File</Link></Nav.Link></>: 
+      
+     <> 
+     <Nav.Link><Link className="nav-link" to="/login">Login</Link></Nav.Link>
+      <Nav.Link><Link className="nav-link" to="/register">Register</Link></Nav.Link>
+      </>
+      }
+    </Nav>
+    {/* <Form inline>
+      <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+      <Button variant="outline-info">Search</Button>
+    </Form> */}
+    {/* < */}
+    {user ? <>    <Link to='/'>
+    <MdSettings/>
+    </Link>
+    <Link to="/logout">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <FaSignInAlt/>
+    </Link>
+    </> : null} 
   </Navbar>
+      </>
     )
 }

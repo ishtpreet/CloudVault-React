@@ -37,9 +37,13 @@ export default function LoginPage(){
         AuthService.userLogIn(values.email,values.password)
         .then((response)=>{
             setisLoading(false)  
-            history.push('/')
-                
-                // alert('Login Success.')
+            if(response.data.accessToken){
+                localStorage.setItem('user',response.data.accessToken)
+                history.push('/dashboard')
+            }
+            else{
+                history.push('/')
+            }
   
         })
         .catch((err)=>{
