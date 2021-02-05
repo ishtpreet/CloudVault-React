@@ -107,7 +107,7 @@ const [emailError, setEmailError] = useState(false)
                                 <span>Create Account</span></button>
                             </div>                                                                  
                             <div className="create__account">                                        
-                                <p>Already registerd? <Link to="login">Login</Link></p>
+                                <p>Already registerd? <Link to="/login">Login</Link></p>
                             </div>
                         </form>             
                     </div>                        

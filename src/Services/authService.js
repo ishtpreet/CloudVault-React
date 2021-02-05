@@ -18,6 +18,12 @@ getCurrentUser(token){
     let config = { headers: token };
     return axios.get(API_URL+"dashboard",config)
 }
+resetPassword(email){
+    return axios.post(API_URL+"forgotPassword",{email})
+}
+verifyPasswordResetToken(token){
+    return axios.post(API_URL+"verifyFToken",{token})
+}
 
 
 }
