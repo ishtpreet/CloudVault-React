@@ -12,10 +12,11 @@ export default function Fpass({match}) {
     const [email,setEmail] = useState('');
     const [name, setName] = useState('');
     const [show, setShow] = useState(false)
+    // const [token, setToken] = useState();
 
     useEffect(()=>{
         setuseeffLoading(true)
-        // alert(match.params.token)
+        // setToken(match.params.token);
         var token = match.params.token;
         AuthService.verifyPasswordResetToken(token)
         .then((response)=>{
@@ -51,28 +52,18 @@ export default function Fpass({match}) {
       validate,
       onSubmit: values => {
           setisLoading(true)
-        // AuthService.userLogIn(values.email,values.password)
+         AuthService.resetPasswordUsingToken(match.params.token, values.password)
         .then((response)=>{
             setisLoading(false)  
-            if(response.data.accessToken){
-                localStorage.setItem('user',response.data.accessToken)
-                // history.push('/dashboard')
-            }
-            else{
-                // history.push('/')
+            if(response.data.message){
+                setShow(true)
+                document.getElementById("fogotPassForm").style.display = 'none';
             }
   
         })
         .catch((err)=>{
             setisLoading(false)
-        //   setFormSubmitError(true)
-        //   if(err.message=== 'Request failed with status code 403')
-        //   {
-        //     setError('Email or Password is Incorrect')
-        //   }
-        //   else if(err.message === 'Request failed with status code 404'){
-        //     setError('Email Id Not Registered.')
-        //   }
+
   
         })
       },
