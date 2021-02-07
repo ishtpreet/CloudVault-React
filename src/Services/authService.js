@@ -2,8 +2,8 @@ import axios from 'axios';
 
 
 
-const API_URL = 'http://localhost:3300/';
-// const API_URL = 'http://192.168.29.149:3300/';
+const API_URL = 'https://api.cloudvault.ml/';
+// const API_URL = 'http://localhost:3300/';
 
 
 
