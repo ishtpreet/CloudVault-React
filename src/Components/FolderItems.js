@@ -13,7 +13,7 @@ export default function FolderItems({match}) {
     const [token, setToken] = useState();
     const [files, setFiles] = useState();
     const [folderName, setFolderName] = useState() 
-    const [isEmptyFolder, setIsEmptyFolder] = useState(true)
+    const [isEmptyFolder, setIsEmptyFolder] = useState(false)
 
     let history = useHistory();
     // const RedirectToDashboard = () =>{
@@ -28,7 +28,7 @@ useEffect(()=>{
     .then((res)=>{
         if(res.data.message == "Empty!")
             // history.push("/dashboard")
-            setIsEmptyFolder(false)
+            setIsEmptyFolder(true)
         setFiles(res.data.message)
         // console.log(res.data.message);
     })
