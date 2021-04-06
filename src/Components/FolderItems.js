@@ -13,6 +13,7 @@ export default function FolderItems({match}) {
     const [token, setToken] = useState();
     const [files, setFiles] = useState();
     const [folderName, setFolderName] = useState() 
+    const [isEmptyFolder, setIsEmptyFolder] = useState(true)
 
     let history = useHistory();
     // const RedirectToDashboard = () =>{
@@ -26,7 +27,8 @@ useEffect(()=>{
     FileUpload.listFiles(match.params.folderId)
     .then((res)=>{
         if(res.data.message == "Empty!")
-            history.push("/dashboard")
+            // history.push("/dashboard")
+            setIsEmptyFolder(false)
         setFiles(res.data.message)
         // console.log(res.data.message);
     })
@@ -49,7 +51,7 @@ useEffect(()=>{
         <FaFolderOpen size={24}/>&nbsp; {token}
         </Row>
         <Row style={{marginLeft:'1%'}}>
-        { files && files.map((e)=>(
+        {!isEmptyFolder && files && files.map((e)=>(
                 
             <Card bg="dark" text="light" style={{ width: '18rem', marginRight: '20px' }}>
             <Card.Img variant="top" src={e.publicUrl} />
