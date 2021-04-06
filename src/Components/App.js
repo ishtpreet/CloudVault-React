@@ -8,7 +8,6 @@ import Dashboard from './Dashboard';
 import Logout from './Logout';
 import ListFile from  './ListFile';
 import Fpass from './Fpass';
-import Test from './Test'
 import FolderItems from './FolderItems';
 
 
@@ -19,9 +18,6 @@ function App() {
     <Switch>
       <Route path="/dashboard">
       <Dashboard/>
-      </Route>
-      <Route path="/test">
-        <Test />
       </Route>
       <Route path="/logout">
         <Logout />

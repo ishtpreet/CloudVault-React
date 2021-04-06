@@ -89,13 +89,9 @@ export default function Dashboard() {
     const onFileChange = (e)=>{
         setFile(e.target.files[0])
         console.log(e.target.files[0])
-            
-    }
-    const onFileUpload = ()=>{
-        // hiddenFileInput.current.click()
         setIsLoading(true)
         const data = new FormData()
-        data.append('input_files',file)
+        data.append('input_files',e.target.files[0])
         FileUpload.fileUpload(data)
         .then((response)=>{
             document.getElementById("fileUpload").value = "";
@@ -110,6 +106,10 @@ export default function Dashboard() {
             setIsLoading(false)
             alert(err)
         })
+            
+    }
+    const onFileUpload = ()=>{
+        hiddenFileInput.current.click()
        
 }
     return (
@@ -131,16 +131,11 @@ export default function Dashboard() {
         </Jumbotron>
         <Container>
             <h1>Upload File</h1>
-            <input id="fileUpload" type="file" onChange={onFileChange}/>
-          <Button disabled={!file || isLoading} onClick={onFileUpload}><MdFileUpload/>{isLoading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}Upload File</Button>
-        {/* <Button onClick={onFileUpload}><MdFileUpload/>{isLoading && (
-                                <span className="spinner-border spinner-border-sm"></span>
-                            )}Upload File</Button>
-        <input id="fileUpload" type="file" onChange={onFileChange} style={{display:"none"}} ref={hiddenFileInput}/>
-        <br />{file ? <p> File Name: {file.name}</p>: null} */}
+            <input id="fileUpload" type="file" onChange={onFileChange} style={{display: 'none'}} ref={hiddenFileInput}/>
         </Container>
+        <Button disabled={isLoading} onClick={onFileUpload}><MdFileUpload/>{isLoading && (
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                )}Upload File</Button> &nbsp;&nbsp;
            <Button onClick={handleShow}><MdCreateNewFolder />Create Folder</Button>
         {/* Folder Modal */}
         <Modal show={showFolderModal} onHide={handleClose}>
@@ -169,6 +164,7 @@ export default function Dashboard() {
       </Modal>
       <div style={{marginTop:'1%'}} />
         {/* Folder Modal Ends */}
+        <hr />
         <ListFolders folders={folders} /> 
         </Container>
         </>
