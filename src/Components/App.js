@@ -9,6 +9,7 @@ import Logout from './Logout';
 import ListFile from  './ListFile';
 import Fpass from './Fpass';
 import Test from './Test'
+import FolderItems from './FolderItems';
 
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
       </Route>
       <Route path="/fpass/:token"
       render={(props)=> <Fpass {...props}/>}
+      ></Route>
+       <Route path="/folder/:folderId"
+      render={(props)=> <FolderItems {...props}/>}
       ></Route>
       <Route path="/login">
         <Loginpage />
