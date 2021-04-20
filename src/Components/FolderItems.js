@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react'
-import {Container, Row, Card, Button, Col, Alert, Toast} from 'react-bootstrap';
+import {Container, Row, Card, Button, Col, Alert, CardColumns} from 'react-bootstrap';
 import { MdArrowBack } from 'react-icons/md';
 import { FaFolderOpen } from 'react-icons/fa';
 import { MdFileUpload } from 'react-icons/md';
@@ -20,6 +20,7 @@ export default function FolderItems({match}) {
     const [isEmptyFolder, setIsEmptyFolder] = useState(false)
     const [refreshList, setRefreshList] = useState(Math.random())
     const [show, setShow] = useState(false)
+    const [deleteIsLoading, setDeleteisLoading] = useState(false) 
 
     let history = useHistory();
     
@@ -89,6 +90,26 @@ const onFileUpload = ()=>{
    
 }
 
+const deleteFile = (e) =>{
+    e.preventDefault()
+    setDeleteisLoading(true)
+    // document.getElementById(e.target.id).appendChild()
+    // console.log(e.target.id)
+    document.getElementById(e.target.id).innerHTML = "Deleting..."
+    FileUpload.deleteFile(e.target.id)
+    .then((res)=>{
+        document.getElementById(e.target.id).innerHTML = "Delete"
+        setDeleteisLoading(false)
+        console.log(res.data.message)
+        setRefreshList(Math.random())
+    })
+    .catch((err)=>{
+        setDeleteisLoading(false)
+        console.log(err)
+    })
+   
+}
+
 
     return (
         <div>
@@ -110,10 +131,11 @@ const onFileUpload = ()=>{
         <FaFolderOpen size={24}/>&nbsp; {folderName}
         </Row>
         <Row style={{marginLeft:'1%'}}>
+            <CardColumns>
         {!isEmptyFolder && files && files.map((e)=>(
-                
-            <Card bg="dark" text="light" style={{ width: '18rem', marginRight: '20px' }}>
-            <Card.Img variant="top" src={e.publicUrl} />
+            
+            <Card bg="dark" text="light" style={{ width: '18rem' }}>
+            <Card.Img variant="top" src={e.publicUrl} style={{ margin: '2%',width: '96%', height: '160px'}}/>
             <Card.Body>
               <Card.Title>{e.friendlyName}</Card.Title>
               <Card.Text>
@@ -121,13 +143,15 @@ const onFileUpload = ()=>{
                   <br />
                 Created At: {e.CreatedAt}
               </Card.Text>
-              <Button variant="primary" onClick={(event) => {
+              <Button variant="primary" size="sm" onClick={(event) => {
                   event.preventDefault();
                   window.open(`${e.publicUrl}`);
-                }}>Download</Button>
+                }}>Download</Button>&nbsp;&nbsp;
+                <Button size="sm" variant="danger" id={e._id} onClick={deleteFile}>Delete</Button>
             </Card.Body>
           </Card>
         ))}
+        </CardColumns>
         </Row>
         </Container>
         </div>

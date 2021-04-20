@@ -29,6 +29,11 @@ class FileUpload{
         let config = { headers: AuthHeader };
         return axios.post(API_URL+"listfiles",{parentFolder: data},config)
     }
+    deleteFile(data){
+        let AuthHeader = authHeader();
+        let config = { headers: AuthHeader };
+        return axios.post(API_URL+"deleteFile",{fileId: data},config)
+    }
 } 
 
 export default new FileUpload();
