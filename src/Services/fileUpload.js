@@ -3,8 +3,8 @@ import axios from 'axios';
 import authHeader from './authHeader';
 
 
-// const API_URL = 'https://api.cloudvault.ml/';
-const API_URL = 'http://localhost:3300/';
+const API_URL = 'https://api.cloudvault.ml/';
+// const API_URL = 'http://localhost:3300/';
 
 class FileUpload{
     fileUpload(data){
