@@ -3,8 +3,8 @@ import axios from 'axios';
 import authHeader from './authHeader';
 
 
-const API_URL = 'https://api.cloudvault.ml/';
-// const API_URL = 'http://localhost:3300/';
+// const API_URL = 'https://api.cloudvault.ml/';
+const API_URL = 'http://localhost:3300/';
 
 class FileUpload{
     fileUpload(data){
@@ -33,6 +33,11 @@ class FileUpload{
         let AuthHeader = authHeader();
         let config = { headers: AuthHeader };
         return axios.post(API_URL+"deleteFile",{fileId: data},config)
+    }
+    shareFile(name, email){
+        let AuthHeader = authHeader();
+        let config = { headers: AuthHeader };
+        return axios.post(API_URL+"shareFile",{name: name, email: email},config)
     }
 } 
 

@@ -1,9 +1,11 @@
 import React, {useEffect, useState, useRef} from 'react'
-import {Container, Row, Card, Button, Col, Alert, CardColumns} from 'react-bootstrap';
+import {Container, Row, Card, Button, Col, Alert, CardColumns, Modal} from 'react-bootstrap';
 import { MdArrowBack } from 'react-icons/md';
 import { FaFolderOpen } from 'react-icons/fa';
 import { MdFileUpload } from 'react-icons/md';
 import { Link, useHistory } from 'react-router-dom';
+import {useFormik} from 'formik';
+import { isEmail } from 'validator'
 
 import Header from './Header';
 import FileUpload from '../Services/fileUpload';
@@ -21,6 +23,9 @@ export default function FolderItems({match}) {
     const [refreshList, setRefreshList] = useState(Math.random())
     const [show, setShow] = useState(false)
     const [deleteIsLoading, setDeleteisLoading] = useState(false) 
+    const [showFolderModal, setShowFolderModal] = useState(false)
+    const [shareSpinner, setShareSpinner] = useState(false)
+    const [shareFileName, setShareFileName] = useState('')
 
     let history = useHistory();
     
@@ -110,6 +115,49 @@ const deleteFile = (e) =>{
    
 }
 
+const validate = values =>{
+    const errors = {}
+    if(!values.email){
+        errors.email = 'Required'
+    }
+    else if(!isEmail(values.email))
+    {
+        errors.email = "Email entered is Invalid"
+    }
+    return errors;
+}
+
+const formik = useFormik({
+  initialValues: {
+    email: '',
+  },
+  validate,
+  onSubmit: values => {
+      setShareSpinner(true)
+    //   console.log(shareFileName,values.email)
+      FileUpload.shareFile(shareFileName,values.email)
+      .then((res)=>{
+          setShareFileName('')
+          values.email = '';
+        setShowFolderModal(false)
+        setShareSpinner(false)
+        //   console.log(res.data)
+      })
+      .catch((err)=>{
+        setShareFileName('')
+        values.email = '';
+        setShareSpinner(false)
+          console.log(err);
+      })
+  }
+});
+const handleClose = () => setShowFolderModal(false);
+const handleShow = () => setShowFolderModal(true);
+
+const onClickShare = (e) =>{
+    setShareFileName(e.target.id)
+    handleShow();
+}
 
     return (
         <div>
@@ -146,13 +194,40 @@ const deleteFile = (e) =>{
               <Button variant="primary" size="sm" onClick={(event) => {
                   event.preventDefault();
                   window.open(`${e.publicUrl}`);
-                }}>Download</Button>&nbsp;&nbsp;
-                <Button size="sm" variant="danger" id={e._id} onClick={deleteFile}>Delete</Button>
+                }}>Download</Button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button size="sm" variant="danger" id={e._id} onClick={deleteFile}>Delete</Button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button size="sm" variant="info" id={e.name} onClick={onClickShare}>Share</Button>
             </Card.Body>
           </Card>
         ))}
         </CardColumns>
         </Row>
+
+
+        <Modal show={showFolderModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Please Enter Recepient Email-ID</Modal.Title>
+        </Modal.Header>
+        <form onSubmit={formik.handleSubmit}>
+        <Modal.Body>
+        <div className="group__input">
+        <input type="text" id="email" name="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} placeholder="Recepient Email ID "/>
+                                {formik.touched.email && formik.errors.email ? <div className="alert alert-danger" style={{padding: "5px 6px"}}>{formik.errors.email}</div> : null}
+            </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button type="submit" variant="primary">
+          {shareSpinner && (
+              <span className="spinner-border spinner-border-sm"></span>
+              )}
+            Share
+          </Button>
+        </Modal.Footer>
+              </form>
+      </Modal>
         </Container>
         </div>
     )
